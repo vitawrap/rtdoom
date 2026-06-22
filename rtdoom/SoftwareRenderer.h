@@ -5,6 +5,7 @@
 #include "Projection.h"
 #include "Frame.h"
 #include "Painter.h"
+#include "Bitmap.h"
 
 namespace rtdoom
 {

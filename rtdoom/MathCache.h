@@ -2,6 +2,8 @@
 
 #include "rtdoom.h"
 
+#include <array>
+
 namespace rtdoom
 {
 // singleton with precalculated trigonometric functions

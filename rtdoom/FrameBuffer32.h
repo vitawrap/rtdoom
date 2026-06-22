@@ -2,6 +2,8 @@
 
 #include "FrameBuffer.h"
 
+#include <array>
+
 namespace rtdoom
 {
 #pragma pack(1)
@@ -32,10 +34,10 @@ public:
     virtual void Clear() override;
     virtual void SetPixel(int x, int y, int color, float lightness) noexcept override;
     virtual void VerticalLine(int x, int sy, int ey, int colorIndex, float lightness) noexcept override;
-    virtual void VerticalLine(int x, int sy, const std::vector<int>& texels, const std::vector<float>& lightnesses) noexcept;
-    virtual void VerticalLine(int x, int sy, const std::vector<int>& texels, float lightness) noexcept;
-    virtual void HorizontalLine(int sx, int y, const std::vector<int>& texels, float lightness) noexcept;
-    virtual void HorizontalLine(int sx, int ex, int y, int colorIndex, float lightness) noexcept;
+    virtual void VerticalLine(int x, int sy, const std::vector<int>& texels, const std::vector<float>& lightnesses) noexcept override;
+    virtual void VerticalLine(int x, int sy, const std::vector<int>& texels, float lightness) noexcept override;
+    virtual void HorizontalLine(int sx, int y, const std::vector<int>& texels, float lightness) noexcept override;
+    virtual void HorizontalLine(int sx, int ex, int y, int colorIndex, float lightness) noexcept override;
 
     FrameBuffer32(int width, int height, const Palette& palette);
     ~FrameBuffer32();

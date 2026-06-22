@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "rtdoom.h"
 #include "MapRenderer.h"
 

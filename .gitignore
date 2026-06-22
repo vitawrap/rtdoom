@@ -263,3 +263,8 @@ __pycache__/
 /rtdoom/freedoom1.WAx
 /rtdoom/GLRenderer-v1.cpp
 /rtdoom/GLRenderer-v2.cpp
+
+# Ignore CMake artifacts 
+build/
+# ...and clangd cache
+.cache/

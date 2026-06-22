@@ -2,6 +2,8 @@
 
 #include "WADFile.h"
 
+#include <functional>
+
 namespace rtdoom
 {
 class FrameBuffer

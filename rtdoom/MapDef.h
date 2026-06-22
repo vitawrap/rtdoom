@@ -3,6 +3,10 @@
 #include "MapStore.h"
 #include "MapStructs.h"
 
+#include <memory>
+#include <deque>
+#include <optional>
+
 namespace rtdoom
 {
 class MapDef

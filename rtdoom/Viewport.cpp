@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "Viewport.h"
 #include "FrameBuffer32.h"
 

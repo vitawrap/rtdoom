@@ -3,6 +3,8 @@
 #include "FrameBuffer.h"
 #include "MapDef.h"
 
+#include <unordered_set>
+
 namespace rtdoom
 {
 // class holding working structures used in drawing a single frame

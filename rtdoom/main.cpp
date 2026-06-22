@@ -1,10 +1,10 @@
-#include "pch.h"
-
-#include <SDL.h>
 #include <SDL_render.h>
 #include "glad/glad.h"
 
 #include "GameLoop.h"
+
+#include <filesystem>
+#include <iostream>
 
 #define ENABLE_GL 1
 

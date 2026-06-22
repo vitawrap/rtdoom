@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "Frame.h"
 
 using std::vector;

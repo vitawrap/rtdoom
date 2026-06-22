@@ -4,6 +4,8 @@
 #include "Helpers.h"
 #include "MapStore.h"
 
+#include <memory>
+
 namespace rtdoom
 {
 struct Point
@@ -105,7 +107,7 @@ struct Segment : Line
 {
     Segment(Vertex s, Vertex e, bool isSolid, Side frontSide, Side backSide, int xOffset, bool lowerUnpegged, bool upperUnpegged) :
         Line {s, e}, isSolid {isSolid}, frontSide {frontSide}, backSide {backSide}, xOffset {xOffset}, lowerUnpegged {lowerUnpegged},
-        upperUnpegged {upperUnpegged}, length {sqrt((e.x - s.x) * (e.x - s.x) + (e.y - s.y) * (e.y - s.y))}
+        upperUnpegged {upperUnpegged}, length {sqrtf((e.x - s.x) * (e.x - s.x) + (e.y - s.y) * (e.y - s.y))}
     {}
 
     bool  isSolid;

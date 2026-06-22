@@ -1,10 +1,12 @@
-#include "pch.h"
+
 #include "rtdoom.h"
 #include "SoftwareRenderer.h"
 #include "MathCache.h"
 #include "WireframePainter.h"
 #include "SolidPainter.h"
 #include "TexturePainter.h"
+
+#include <algorithm>
 
 namespace rtdoom
 {
@@ -327,15 +329,16 @@ void SoftwareRenderer::RenderSpriteThing(Frame::SpriteThing* const thing) const
     {
         return;
     }
+    const auto iscale = 1.0 / scale;
 
     const auto  midDistance  = MathCache::instance().Tan(viewAngle) / PI4;
     const auto  centerX      = static_cast<int>((m_frameBuffer->m_width / 2) * (1 + midDistance));
     const auto  centerY      = m_projection->ViewY(thing->distance, thing->z - m_gameState.m_player.z);
     const auto& texture      = spritePatch->second;
-    const auto  spriteWidth  = static_cast<int>(texture->width / scale);
-    const auto  spriteHeight = static_cast<int>(texture->height / scale);
-    const auto  startY       = static_cast<int>(centerY - texture->top / scale);
-    const auto  startX       = static_cast<int>(centerX - texture->left / scale);
+    const auto  spriteWidth  = static_cast<int>(texture->width * iscale);
+    const auto  spriteHeight = static_cast<int>(texture->height * iscale);
+    const auto  startY       = static_cast<int>(centerY - texture->top * iscale);
+    const auto  startX       = static_cast<int>(centerX - texture->left * iscale);
 
     // clip sprite against already drawn walls
     const auto& occlusionMatrix = ClipSprite(startX, startY, spriteWidth, spriteHeight, scale);

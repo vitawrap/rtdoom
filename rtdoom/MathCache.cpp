@@ -1,5 +1,8 @@
-#include "pch.h"
+
 #include "MathCache.h"
+
+#include <math.h>
+#include <stdint.h>
 
 namespace rtdoom
 {

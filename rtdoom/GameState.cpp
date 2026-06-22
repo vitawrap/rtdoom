@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "rtdoom.h"
 #include "GameState.h"
 #include "Projection.h"

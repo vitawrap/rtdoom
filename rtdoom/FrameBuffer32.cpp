@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "FrameBuffer32.h"
 
 namespace rtdoom

@@ -1,7 +1,9 @@
-#include "pch.h"
+
 #include "rtdoom.h"
 #include "MapDef.h"
 #include "WADFile.h"
+
+#include <set>
 
 using std::vector;
 using std::deque;

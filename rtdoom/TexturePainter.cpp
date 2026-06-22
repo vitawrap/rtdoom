@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "TexturePainter.h"
 #include "Projection.h"
 #include "MathCache.h"
@@ -52,7 +52,7 @@ void TexturePainter::PaintSprite(int x, int sy, std::vector<bool> occlusion, con
     const float vStep = textureContext.yScale;
     const auto  tx    = Helpers::Clip(static_cast<int>(textureContext.texelX), sprite->width);
     float       vs    = 0;
-    for(auto o : occlusion)
+    for(auto o : occlusion) // this loop is SLOW!!!
     {
         if(!o)
         {
@@ -61,7 +61,7 @@ void TexturePainter::PaintSprite(int x, int sy, std::vector<bool> occlusion, con
         }
         else
         {
-            texels.push_back(247);
+            texels.push_back(247); // the clipped sprite gets shifted up and through walls if this isn't done
         }
         vs += vStep;
     }

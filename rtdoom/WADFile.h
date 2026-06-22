@@ -2,6 +2,8 @@
 
 #include "MapStore.h"
 
+#include <memory>
+
 namespace rtdoom
 {
 #pragma pack(1)

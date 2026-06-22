@@ -1,10 +1,12 @@
-#include "pch.h"
+
 #include "GLContext.h"
 
 #pragma warning(disable : 4201)
 
 #include "glad/glad.h"
 #include "glm/gtc/type_ptr.hpp"
+
+#include <iostream>
 
 namespace rtdoom
 {

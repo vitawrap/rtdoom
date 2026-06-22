@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "GLViewport.h"
 #include "glad/glad.h"
 

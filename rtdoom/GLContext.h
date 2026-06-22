@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include "WADFile.h"
 #include "MapStructs.h"
 #include "glm/glm.hpp"

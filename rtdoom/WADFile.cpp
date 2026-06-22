@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "WADFile.h"
 #include "Helpers.h"
 

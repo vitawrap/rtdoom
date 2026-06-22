@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "WireframePainter.h"
 #include "Projection.h"
 #include "MathCache.h"
