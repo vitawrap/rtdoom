@@ -131,6 +131,7 @@ int main(int /*argc*/, char** /*argv*/)
             tickCounter            = nextCounter;
             gameLoop.Tick(seconds);
 
+#ifndef NDEBUG
             if(frame != NULL)
             {
                 cout << "Frame time: " << seconds * 1000.0 << "ms: " << frame->m_numSegments << " segs, " << frame->m_numFloorPlanes << "+"
@@ -140,6 +141,7 @@ int main(int /*argc*/, char** /*argv*/)
             {
                 cout << "Frame time: " << seconds * 1000.0 << "ms" << endl;
             }
+#endif
         }
 
         DestroySDL(sdlRenderer, sdlWindow);
