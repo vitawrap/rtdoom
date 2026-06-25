@@ -266,5 +266,6 @@ __pycache__/
 
 # Ignore CMake artifacts 
 build/
+build-web/
 # ...and clangd cache
 .cache/
