@@ -4,6 +4,7 @@
 #include "MapDef.h"
 
 #include <unordered_set>
+#include <list>
 
 namespace rtdoom
 {
