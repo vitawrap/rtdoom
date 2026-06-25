@@ -72,11 +72,11 @@ void Viewport::Draw()
 
 void Viewport::DrawSteps()
 {
-    void* pixelBuffer = new int[m_width * m_height];
+    int* pixelBuffer = new int[m_width * m_height];
     memset(pixelBuffer, 0x00ffffff, sizeof(int) * m_width * m_height);
     int knt = 0;
 
-    m_frameBuffer->Attach(pixelBuffer, [&]() {
+    m_frameBuffer->Attach(reinterpret_cast<void*>(pixelBuffer), [&]() {
         knt++;
         knt %= 2;
         if(knt != 1)
@@ -91,7 +91,7 @@ void Viewport::DrawSteps()
             throw std::runtime_error("Unable to lock texture");
         }
 
-        memcpy(sdlBuffer, pixelBuffer, sizeof(int) * m_width * m_height);
+        memcpy(sdlBuffer, reinterpret_cast<const void*>(pixelBuffer), sizeof(int) * m_width * m_height);
 
         SDL_UnlockTexture(m_screenTexture);
 
