@@ -65,6 +65,11 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE rtdoom include)
 target_include_directories(${PROJECT_NAME} PUBLIC "${SDL2_SOURCE_DIR}/include" "${glm_SOURCE_DIR}")
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+    $<$<CONFIG:Release>:_RT_PUBLIC>
+    $<$<CONFIG:MinSizeRel>:_RT_PUBLIC>
+)
+
 if (CMAKE_TOOLCHAIN_FILE MATCHES ".*Emscripten\.cmake$")
   target_link_libraries(${PROJECT_NAME}
     PRIVATE glm

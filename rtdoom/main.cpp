@@ -101,6 +101,7 @@ int main(int /*argc*/, char** /*argv*/)
                 case SDLK_RIGHT:
                     gameLoop.Rotate(p ? 1 : 0);
                     break;
+#ifndef _RT_PUBLIC
                 case SDLK_1:
                     gameLoop.SetRenderingMode(Renderer::RenderingMode::Wireframe);
                     SDL_SetWindowTitle(sdlWindow, "rtdoom (Wireframe)");
@@ -113,16 +114,16 @@ int main(int /*argc*/, char** /*argv*/)
                     gameLoop.SetRenderingMode(Renderer::RenderingMode::Textured);
                     SDL_SetWindowTitle(sdlWindow, "rtdoom (Textured)");
                     break;
-#if(ENABLE_GL)
+#   if(ENABLE_GL)
                 case SDLK_4:
                     gameLoop.SetRenderingMode(Renderer::RenderingMode::OpenGL);
                     SDL_SetWindowTitle(sdlWindow, "rtdoom (OpenGL)");
                     break;
-#else
+#   else
                 case SDLK_4:
                     std::cout << "OpenGL not enabled, recompile with ENABLE_GL = 1" << std::endl;
                     break;
-#endif
+#   endif
                 case SDLK_s:
                     if(p)
                     {
@@ -145,6 +146,7 @@ int main(int /*argc*/, char** /*argv*/)
                     cout << "Player position: (" << gameLoop.Player().x << ", " << gameLoop.Player().y << ", " << gameLoop.Player().a
                             << ")" << endl;
                     break;
+#endif
                 default:
                     break;
                 }
