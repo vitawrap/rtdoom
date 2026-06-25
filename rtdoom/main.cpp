@@ -70,11 +70,13 @@ int main(int /*argc*/, char** /*argv*/)
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
+#ifndef __EMSCRIPTEN__ /* web app shouldn't be exit-able */
             if((SDL_QUIT == event.type) || (SDL_KEYDOWN == event.type && SDL_SCANCODE_ESCAPE == event.key.keysym.scancode))
             {
                 gameLoop.Stop();
                 break;
             }
+#endif
 
             if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
             {
