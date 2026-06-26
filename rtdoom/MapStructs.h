@@ -27,6 +27,38 @@ struct Point
     bool operator==(Point& p) {
         return x == p.x && y == p.y;
     }
+
+    Point operator- (Point rhs) const {
+        return Point(x-rhs.x, y-rhs.y);
+    }
+
+    Point operator+ (Point rhs) const {
+        return Point(x+rhs.x, y+rhs.y);
+    }
+
+    Point operator/ (Point rhs) const {
+        return Point(x/rhs.x, y/rhs.y);
+    }
+
+    Point operator* (float s) const {
+        return Point(x * s, y * s);
+    }
+
+    float Length2() const {
+        return (x * x) + (y * y);
+    }
+
+    float Length() const {
+        return sqrtf(Length2());
+    }
+
+    float Dot(Point rhs) const {
+        return (x * rhs.x) + (y * rhs.y);
+    }
+
+    Point Cross() {
+        return Point(-y, x);
+    }
 };
 
 struct Vertex : Point
