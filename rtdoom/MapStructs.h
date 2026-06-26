@@ -4,6 +4,7 @@
 #include "Helpers.h"
 #include "MapStore.h"
 
+#include <math.h>
 #include <memory>
 
 namespace rtdoom
