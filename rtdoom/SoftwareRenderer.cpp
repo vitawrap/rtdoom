@@ -61,13 +61,13 @@ void SoftwareRenderer::RenderSegments() const
         // only draw segments that are facing the player
         if(MapDef::IsInFrontOf(m_gameState.m_player, *segment))
         {
-            RenderMapSegment(*segment);
-
             // stop drawing once the frame has been fully occluded with solid walls or vertical spans
             if(m_frame->IsOccluded())
             {
                 break;
             }
+
+            RenderMapSegment(*segment);
         }
     }
 }
