@@ -91,6 +91,11 @@ struct Line
 
     Vertex s;
     Vertex e;
+
+    bool DistIntersection(Point pt) {
+        float refLength = (e - s).Length();
+        return ((pt - e).Length() < refLength) && ((pt - s).Length() < refLength);
+    }
 };
 
 struct Sector
