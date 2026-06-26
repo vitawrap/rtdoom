@@ -185,6 +185,14 @@ bool MapDef::IsInFrontOf(const Point& pov, const Line& line) noexcept
     return right < left;
 }
 
+float MapDef::SignedDist(const Point &pov, const Line &line) noexcept
+{
+    Point vline = line.s - line.e;
+    Point vinc = pov - line.e;
+    Point lnorm = vline.Cross();
+    return lnorm.Dot(vinc);
+}
+
 bool MapDef::IsInFrontOf(const Point& pov, const MapStore::Node& node) noexcept
 {
     return IsInFrontOf(
@@ -215,6 +223,7 @@ void MapDef::ProcessSegment(float sx, float sy, float ex, float ey, unsigned sho
     {
         const auto&       lineDef = m_store.m_lineDefs[lineDefNo];
         bool              isSolid = lineDef.leftSideDef > 32000 || lineDef.rightSideDef > 32000;
+        bool              isBlocking = lineDef.flags & 0x0001;
         Sector            frontSector, backSector;
         MapStore::SideDef frontSide, backSide;
         if(direction == 1 && lineDef.leftSideDef < 32000)
@@ -252,11 +261,11 @@ void MapDef::ProcessSegment(float sx, float sy, float ex, float ey, unsigned sho
                    frontSide.yOffset};
 
         m_segments.push_back(
-            std::make_shared<Segment>(s, e, isSolid, front, back, offset, (bool)(lineDef.flags & 0x0010), (bool)(lineDef.flags & 0x0008)));
+            std::make_shared<Segment>(s, e, isSolid, front, back, offset, (bool)(lineDef.flags & 0x0010), (bool)(lineDef.flags & 0x0008), isBlocking));
     }
     else
     {
-        m_segments.push_back(std::make_shared<Segment>(s, e, false, Side(), Side(), offset, false, false));
+        m_segments.push_back(std::make_shared<Segment>(s, e, false, Side(), Side(), offset, false, false, false));
     }
 }
 

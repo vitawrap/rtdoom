@@ -62,7 +62,7 @@ void GameLoop::ClipPlayer()
     const auto& sector = m_gameState.m_mapDef->GetSector(Point(m_gameState.m_player.x, m_gameState.m_player.y));
     if(sector.has_value())
     {
-        m_gameState.m_player.z = sector.value().floorHeight + 45;
+        m_gameState.m_player.z = sector.value().floorHeight + 45.f;
     }
 }
 
@@ -74,7 +74,6 @@ void GameLoop::StepFrame()
 void GameLoop::Tick(float seconds)
 {
     m_gameState.Move(m_moveDirection, m_rotateDirection, seconds);
-    ClipPlayer();
 }
 
 void GameLoop::ResizeWindow(int width, int height)

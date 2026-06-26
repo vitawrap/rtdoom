@@ -143,12 +143,13 @@ struct Side
 
 struct Segment : Line
 {
-    Segment(Vertex s, Vertex e, bool isSolid, Side frontSide, Side backSide, int xOffset, bool lowerUnpegged, bool upperUnpegged) :
-        Line {s, e}, isSolid {isSolid}, frontSide {frontSide}, backSide {backSide}, xOffset {xOffset}, lowerUnpegged {lowerUnpegged},
+    Segment(Vertex s, Vertex e, bool isSolid, Side frontSide, Side backSide, int xOffset, bool lowerUnpegged, bool upperUnpegged, bool blocking) :
+        Line {s, e}, isSolid {isSolid}, frontSide {frontSide}, backSide {backSide}, xOffset {xOffset}, lowerUnpegged {lowerUnpegged}, isBlocking{blocking},
         upperUnpegged {upperUnpegged}, length {sqrtf((e.x - s.x) * (e.x - s.x) + (e.y - s.y) * (e.y - s.y))}
     {}
 
     bool  isSolid;
+    bool  isBlocking;
     Side  frontSide;
     Side  backSide;
     int   xOffset;
