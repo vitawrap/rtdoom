@@ -189,8 +189,16 @@ float MapDef::SignedDist(const Point &pov, const Line &line) noexcept
 {
     Point vline = line.s - line.e;
     Point vinc = pov - line.e;
-    Point lnorm = vline.Cross();
-    return lnorm.Dot(vinc);
+    float cross = vline.x * vinc.y - vline.y * vinc.x;
+    return cross / vline.Length();
+}
+
+Point MapDef::ProjectPointOnLine(const Point &pov, const Line &line) noexcept
+{
+    Point vline = line.e - line.s;
+    Point vinc = pov - line.s;
+    Point p = line.s + (vline.Normalized() * (vline.Dot(vinc) / vline.Length()));
+    return p;
 }
 
 bool MapDef::IsInFrontOf(const Point& pov, const MapStore::Node& node) noexcept
