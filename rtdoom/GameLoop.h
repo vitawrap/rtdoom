@@ -25,6 +25,7 @@ protected:
     Viewport                m_mapViewport;
     bool                    m_isRunning;
     bool                    m_stepFrame;
+    bool                    m_renderMap;
     int                     m_moveDirection;
     int                     m_rotateDirection;
     Renderer::RenderingMode m_renderingMode;
@@ -50,6 +51,7 @@ public:
     void         Tick(float seconds);
     void         ResizeWindow(int width, int height);
     void         SetRenderingMode(Renderer::RenderingMode renderingMode);
+    void         SetRenderMap(bool render);
 
     const Thing& Player() const
     {

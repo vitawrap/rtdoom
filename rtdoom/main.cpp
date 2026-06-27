@@ -101,6 +101,9 @@ int main(int /*argc*/, char** /*argv*/)
                 case SDLK_RIGHT:
                     gameLoop.Rotate(p ? 1 : 0);
                     break;
+                case SDLK_TAB:
+                    gameLoop.SetRenderMap(p);
+                    break;
 #ifndef _RT_PUBLIC
                 case SDLK_1:
                     gameLoop.SetRenderingMode(Renderer::RenderingMode::Wireframe);

@@ -4,7 +4,7 @@
 namespace rtdoom
 {
 GameLoop::GameLoop(SDL_Renderer* sdlRenderer, SDL_Window* window, const WADFile& wadFile) :
-    m_gameState {}, m_moveDirection {0}, m_rotateDirection {0}, m_isRunning {false}, m_stepFrame {false}, m_softwareRenderer {m_gameState,
+    m_gameState {}, m_moveDirection {0}, m_rotateDirection {0}, m_isRunning {false}, m_stepFrame {false}, m_renderMap{false}, m_softwareRenderer {m_gameState,
                                                                                                                               wadFile},
     m_glRenderer {m_gameState, wadFile, s_displayX, s_displayY}, m_glViewport {window, m_glRenderer},
     m_playerViewport {sdlRenderer, m_softwareRenderer, ViewScale(s_displayX), ViewScale(s_displayY), wadFile.m_palette, true},
@@ -50,7 +50,8 @@ const Frame* GameLoop::RenderFrame()
         else
         {
             m_playerViewport.Draw();
-            m_mapViewport.Draw();
+            if (m_renderMap)
+                m_mapViewport.Draw();
         }
         SDL_RenderPresent(m_sdlRenderer);
         return m_softwareRenderer.GetLastFrame();
@@ -90,6 +91,11 @@ void GameLoop::SetRenderingMode(Renderer::RenderingMode renderingMode)
     {
         m_softwareRenderer.SetMode(renderingMode);
     }
+}
+
+void GameLoop::SetRenderMap(bool render)
+{
+    m_renderMap = render;
 }
 
 void GameLoop::Start(const MapStore& mapStore)
