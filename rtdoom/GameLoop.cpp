@@ -63,7 +63,8 @@ void GameLoop::ClipPlayer()
     const auto& sector = m_gameState.m_mapDef->GetSector(Point(m_gameState.m_player.x, m_gameState.m_player.y));
     if(sector.has_value())
     {
-        m_gameState.m_player.z = sector.value().floorHeight + 45.f;
+        m_gameState.m_player.z = m_gameState.m_player.m_targetZ = sector.value().floorHeight + 40.f;
+        m_gameState.m_player.m_velocityZ = 0.f;
     }
 }
 

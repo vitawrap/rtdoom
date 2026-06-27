@@ -17,6 +17,9 @@ public:
         {}
 
         void Step(MapDef* mapDef, int m, int r, float step);
+
+        float m_targetZ;
+        float m_velocityZ;
     };
 
     std::unique_ptr<MapDef> m_mapDef;

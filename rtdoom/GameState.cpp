@@ -22,6 +22,8 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
 
     float to_x = x + (step * 32 * 10.0f * m * cosf(a));
     float to_y = y + (step * 32 * 10.0f * m * sinf(a));
+    float sectZ = 0.f;
+    bool isLiquid = false;
     
     std::deque<std::shared_ptr<Segment>> segments;
     const auto&                subSectors = mapDef->GetSubSectorsToDraw(Point(x, y));
@@ -33,6 +35,8 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
     if(subSectors.size())
     {
         const auto& sect = mapDef->m_sectors[subSectors[0]->sectorId];
+        sectZ = sect.floorHeight - (sect.isLiquid? 30.f : 0.f);
+        isLiquid = sect.isLiquid;
         
         const auto& predict = Point(to_x, to_y);
         const auto& _toSect = mapDef->GetSector(Point(to_x, to_y));
@@ -63,7 +67,7 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
         }
 
         // nothing is stopping our movement
-        z = sect.floorHeight + 40.f;
+        m_targetZ = sectZ + 40.f;
 
         x = response.x;
         y = response.y;
@@ -72,6 +76,17 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
         //printf("Sector %d, Floor: %f, Ceiling: %f\n", sect.sectorId, sect.floorHeight, sect.ceilingHeight);
     } else {
         //puts("No sector");
+    }
+
+    // animate
+    if (m_targetZ > z) {
+        m_velocityZ = 0.f;
+        float allowedSectZ = z < (sectZ + 20.f)? (sectZ + 20.f) : (z + fabs(fmodf(m_targetZ, step * 256.f)));
+        z = allowedSectZ;
+    } else {
+        m_velocityZ = m_targetZ < z? m_velocityZ + (step * 0.75f) : 0.f;
+        float allowedSectZ = (z - m_velocityZ > m_targetZ)? z - m_velocityZ : m_targetZ;
+        z = allowedSectZ;
     }
 }
 
