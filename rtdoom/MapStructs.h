@@ -41,6 +41,10 @@ struct Point
         return Point(x/rhs.x, y/rhs.y);
     }
 
+    Point operator/ (float s) const {
+        return Point(x/s, y/s);
+    }
+
     Point operator* (float s) const {
         return Point(x * s, y * s);
     }
@@ -51,6 +55,10 @@ struct Point
 
     float Length() const {
         return sqrtf(Length2());
+    }
+
+    Point Normalized() const {
+        return *this / Length();
     }
 
     float Dot(Point rhs) const {
