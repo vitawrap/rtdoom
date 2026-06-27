@@ -76,10 +76,10 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float tim
             if (!(segment->isSolid || segment->isBlocking) /*|| segment->frontSide.sideless || segment->backSide.sideless */)
                 continue;
 
-            float dist = mapDef->SignedDist(predict, *segment);
+            float dist = mapDef->SignedDist(response, *segment);
             if (dist < PLAYER_RADIUS &&
                 // + make sure we didn't just collide with the infinitely extending wall plane
-                segment->DistIntersection(predict))
+                segment->DistIntersection(response))
             {
                 Point project = mapDef->ProjectPointOnLine(response, *segment);
                 Point norm = (segment->s - segment->e).Cross().Normalized();
