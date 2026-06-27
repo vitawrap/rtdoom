@@ -40,6 +40,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     static uint64_t tickFrequency;
     static uint64_t tickCounter;
+    static uint64_t frametimeCounter;
 
 #ifdef __EMSCRIPTEN__
     static auto main_loop_wrap = []() -> void
@@ -66,6 +67,8 @@ int main(int /*argc*/, char** /*argv*/)
             platformInitialized = true;
         }
         GameLoop& gameLoop = *_gameLoop;
+
+        frametimeCounter = SDL_GetPerformanceCounter();
 
         SDL_Event event;
         while(SDL_PollEvent(&event))
@@ -162,6 +165,14 @@ int main(int /*argc*/, char** /*argv*/)
         const auto seconds     = (nextCounter - tickCounter) / static_cast<float>(tickFrequency);
         tickCounter            = nextCounter;
         gameLoop.Tick(seconds);
+
+#ifndef __EMSCRIPTEN__
+        // keep a consistent speed of *about* 60 fps to be on par with browser animation performance
+        const auto frameSeconds = (nextCounter - frametimeCounter) / static_cast<float>(tickFrequency);
+        if (frameSeconds < 0.016) {
+            SDL_Delay(16 - (frameSeconds * 1000.f));
+        }
+#endif
 
 #ifndef NDEBUG
         if(frame != NULL)
