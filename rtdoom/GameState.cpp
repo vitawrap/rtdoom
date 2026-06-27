@@ -41,9 +41,9 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float tim
     
     std::deque<std::shared_ptr<Segment>> segments;
     const auto&                subSectors = mapDef->GetSubSectorsToDraw(Point(x, y));
-    //for(auto& subSector : subSectors)
+    for(auto& subSector : subSectors)
     {
-        for(auto& segment : subSectors[0]->segments)
+        for(auto& segment : subSector->segments)
             segments.push_back(segment);
     }
     if(subSectors.size())
@@ -77,9 +77,9 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float tim
                 continue;
 
             float dist = mapDef->SignedDist(response, *segment);
-            if (dist < PLAYER_RADIUS &&
+            if (dist < PLAYER_RADIUS && dist >= -4.f &&
                 // + make sure we didn't just collide with the infinitely extending wall plane
-                segment->DistIntersection(response, PLAYER_RADIUS))
+                mapDef->IsPointOnLine(response, *segment, PLAYER_RADIUS * .5f))
             {
                 Point project = mapDef->ProjectPointOnLine(response, *segment);
                 Point norm = (segment->s - segment->e).Cross().Normalized();
