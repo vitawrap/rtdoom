@@ -6,6 +6,8 @@
 
 using std::string;
 
+#define PLAYER_RADIUS 8.f
+
 namespace rtdoom
 {
 /**
@@ -42,13 +44,13 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
                 continue;
 
             float dist = mapDef->SignedDist(predict, *segment);
-            if (dist < 4.f &&
+            if (dist < PLAYER_RADIUS &&
                 // + make sure we didn't just collide with the infinitely extending wall plane
                 segment->DistIntersection(predict))
             {
                 Point project = mapDef->ProjectPointOnLine(response, *segment);
                 Point norm = (segment->s - segment->e).Cross().Normalized();
-                response = (project + (norm * 4.f));
+                response = (project + (norm * PLAYER_RADIUS));
             }
         }
 
@@ -56,7 +58,7 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
         if (_toSect.has_value() && _toSect.value().sectorId != sect.sectorId) {
             const auto& toSect = _toSect.value();
             if ((toSect.floorHeight > (z + 1.f)) || ((toSect.ceilingHeight - toSect.floorHeight) < 45.f)) {
-                goto movement_stopped;
+                goto movement_stopped; /* TODO: This might still cause the player to enter inaccessible sectors (too high up or too low down) */
             }
         }
 
