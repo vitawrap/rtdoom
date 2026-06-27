@@ -101,8 +101,8 @@ struct Line
     Vertex s;
     Vertex e;
 
-    bool DistIntersection(Point pt) {
-        float refLength = (e - s).Length();
+    bool DistIntersection(Point pt, float bias = 0.f) {
+        float refLength = (e - s).Length() + bias;
         return ((pt - e).Length() < refLength) && ((pt - s).Length() < refLength);
     }
 };
