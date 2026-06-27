@@ -47,8 +47,8 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
                 segment->DistIntersection(predict))
             {
                 Point project = mapDef->ProjectPointOnLine(response, *segment);
-                Point vec = (project - response).Normalized();
-                response = response - (vec * 4.f);
+                Point norm = (segment->s - segment->e).Cross().Normalized();
+                response = (project + (norm * 4.f));
             }
         }
 
