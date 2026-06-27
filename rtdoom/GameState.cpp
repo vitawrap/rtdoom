@@ -8,6 +8,14 @@ using std::string;
 
 #define PLAYER_RADIUS 8.f
 
+static float clampf(float x, float min, float max) {
+    return x > min? (x < max? x : max) : min;
+}
+
+static float minf(float x, float y) {
+    return x < y? x : y;
+}
+
 namespace rtdoom
 {
 /**
@@ -81,7 +89,7 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
     // animate
     if (m_targetZ > z) {
         m_velocityZ = 0.f;
-        float allowedSectZ = z < (sectZ + 20.f)? (sectZ + 20.f) : (z + fabs(fmodf(m_targetZ, step * 256.f)));
+        float allowedSectZ = z < (sectZ + 20.f)? (sectZ + 20.f) : z = minf(z + (step * 128.f), m_targetZ);
         z = allowedSectZ;
     } else {
         m_velocityZ = m_targetZ < z? m_velocityZ + (step * 7.5f) : 0.f;
