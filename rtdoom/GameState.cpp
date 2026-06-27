@@ -39,12 +39,14 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float tim
     float sectZ = 0.f;
     bool isLiquid = false;
     
-    std::deque<std::shared_ptr<Segment>> segments;
+    std::vector<std::shared_ptr<Segment>> segments;
     const auto&                subSectors = mapDef->GetSubSectorsToDraw(Point(x, y));
     for(auto& subSector : subSectors)
     {
-        for(auto& segment : subSector->segments)
+        segments.reserve(segments.size() + subSector->segments.size());
+        for(auto& segment : subSector->segments) {
             segments.push_back(segment);
+        }
     }
     if(subSectors.size())
     {
@@ -68,15 +70,22 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float tim
         
         // resume sector checks
         const auto& predict = Point(to_x, to_y);
-        const auto& _toSect = mapDef->GetSector(Point(to_x, to_y));
         Point response = predict;
 
-        // no obvious blocking sector, test segments from the sector we were in at the time of walking
-        for(auto& segment : segments) {
-            if (!(segment->isSolid || segment->isBlocking) /*|| segment->frontSide.sideless || segment->backSide.sideless */)
-                continue;
+        // check sectors from segments, and if their floor height is not steppable, slide off wall
+        for(int i = 0; i < segments.size(); ++i) {
+            auto& segment = segments[i];
 
             float dist = mapDef->SignedDist(response, *segment);
+
+            if (!(segment->isSolid || segment->isBlocking) /*|| segment->frontSide.sideless || segment->backSide.sideless */) {
+                // before ignoring: check if it's another sector ahead we can step on
+                const auto& toSect = dist < 0.f? segment->frontSide.sector : segment->backSide.sector;
+                if (toSect.floorHeight < (z - 9.f) /* TODO: Check if room between floor and ceiling allows traversal */) {
+                    continue; // steppable: skip linedef checks
+                }
+            }
+ 
             if (dist < PLAYER_RADIUS && dist >= -4.f &&
                 // + make sure we didn't just collide with the infinitely extending wall plane
                 mapDef->IsPointOnLine(response, *segment, PLAYER_RADIUS * .5f))
@@ -87,21 +96,12 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float tim
             }
         }
 
-        // if we're stepping on another adjacent sector, can we actually go?
-        if (_toSect.has_value() && _toSect.value().sectorId != sect.sectorId) {
-            const auto& toSect = _toSect.value();
-            if ((toSect.floorHeight > (z + 1.f)) || ((toSect.ceilingHeight - toSect.floorHeight) < 45.f)) {
-                goto movement_stopped; /* TODO: This might still cause the player to enter inaccessible sectors (too high up or too low down) */
-            }
-        }
-
         // nothing is stopping our movement
         m_targetZ = sectZ + 40.f;
 
         x = response.x;
         y = response.y;
 
-    movement_stopped:;
         //printf("Sector %d, Floor: %f, Ceiling: %f\n", sect.sectorId, sect.floorHeight, sect.ceilingHeight);
     } else {
         //puts("No sector");
