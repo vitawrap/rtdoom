@@ -114,7 +114,9 @@ struct Sector
     Sector(int sectorId, const MapStore::Sector& s) :
         sectorId {sectorId}, floorHeight {static_cast<float>(s.floorHeight)}, ceilingHeight {static_cast<float>(s.ceilingHeight)},
         ceilingTexture {Helpers::MakeString(s.ceilingTexture)}, floorTexture {Helpers::MakeString(s.floorTexture)},
-        lightLevel {s.lightLevel / 255.0f}, isSky {strcmp(s.ceilingTexture, "F_SKY1") == 0}
+        lightLevel {s.lightLevel / 255.0f},
+        isSky {strcmp(s.ceilingTexture, "F_SKY1") == 0},
+        isLiquid {memcmp(s.floorTexture, "NUKAGE", 6) == 0}
     {}
 
     int         sectorId;
@@ -123,7 +125,8 @@ struct Sector
     float       floorHeight;
     float       ceilingHeight;
     float       lightLevel;
-    bool        isSky;
+    bool        isSky;      // check ceiling
+    bool        isLiquid;   // check floor
 };
 
 struct Side
