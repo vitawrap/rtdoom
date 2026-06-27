@@ -7,6 +7,8 @@
 using std::string;
 
 #define PLAYER_RADIUS 8.f
+#define PLAYER_INERTIA 2.5f
+#define PLAYER_SWIM_INERTIA 1.0f
 
 static float clampf(float x, float min, float max) {
     return x > min? (x < max? x : max) : min;
@@ -16,6 +18,10 @@ static float minf(float x, float y) {
     return x < y? x : y;
 }
 
+static float signf(float x) {
+    return x > 0.f? 1.f : -1.f;
+}
+
 namespace rtdoom
 {
 /**
@@ -23,13 +29,13 @@ namespace rtdoom
  * because in the BSP we're still technically closest to that sector, according to clipping planes.
  * we need to actually test segments to check if we're actually CONTAINED in the active subsector.
  */
-void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
+void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float time)
 {
     a += step * 16 * -0.15f * r;
     a = Projection::NormalizeAngle(a);
 
-    float to_x = x + (step * 32 * 10.0f * m * cosf(a));
-    float to_y = y + (step * 32 * 10.0f * m * sinf(a));
+    // init vars necessary for both animation and navigation up there
+    float to_x = 0.f, to_y = 0.f;
     float sectZ = 0.f;
     bool isLiquid = false;
     
@@ -45,7 +51,22 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
         const auto& sect = mapDef->m_sectors[subSectors[0]->sectorId];
         sectZ = sect.floorHeight - (sect.isLiquid? 30.f : 0.f);
         isLiquid = sect.isLiquid;
+
+        // compute walking math here once we know if we're in a liquid sector
+        const float inertia = isLiquid? PLAYER_SWIM_INERTIA : PLAYER_INERTIA;
+        if (m != 0.f)
+            m_walkInertia = clampf(m_walkInertia + (m * step * inertia), -1.f, 1.f);
+        else {
+            const auto wiSign = signf(m_walkInertia);
+            m_walkInertia -= (step * inertia * signf(m_walkInertia));
+            if (signf(m_walkInertia) != wiSign)
+                m_walkInertia = 0.f;
+        }
+
+        float to_x = x + (step * 32 * 10.0f * m_walkInertia * cosf(a));
+        float to_y = y + (step * 32 * 10.0f * m_walkInertia * sinf(a));
         
+        // resume sector checks
         const auto& predict = Point(to_x, to_y);
         const auto& _toSect = mapDef->GetSector(Point(to_x, to_y));
         Point response = predict;
@@ -96,6 +117,10 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
         float allowedSectZ = (z - m_velocityZ > m_targetZ)? z - m_velocityZ : m_targetZ;
         z = allowedSectZ;
     }
+
+    if (m_walkInertia != 0.f || isLiquid) {
+        z += sinf(time * 6.f) * (isLiquid? 1.f : m_walkInertia);
+    }
 }
 
 GameState::GameState() : m_player {0, 0, 0, 0}, m_mapDef {nullptr}, m_step {0} {}
@@ -112,7 +137,7 @@ void GameState::Move(int m, int r, float step)
 {
     m_step += step;
 
-    m_player.Step(m_mapDef.get(), m, r, step);
+    m_player.Step(m_mapDef.get(), m, r, step, m_step);
 }
 
 GameState::~GameState() {}

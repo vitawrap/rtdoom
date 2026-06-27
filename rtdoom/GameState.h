@@ -16,10 +16,11 @@ public:
             Thing(thing)
         {}
 
-        void Step(MapDef* mapDef, int m, int r, float step);
+        void Step(MapDef* mapDef, int m, int r, float step, float time);
 
         float m_targetZ;
         float m_velocityZ;
+        float m_walkInertia;
     };
 
     std::unique_ptr<MapDef> m_mapDef;
@@ -28,6 +29,8 @@ public:
 
     void Move(int m, int r, float step);
     void NewGame(const MapStore& mapStore);
+
+    float GetSecondsElapsed() const { return m_step; }
 
     GameState();
     ~GameState();

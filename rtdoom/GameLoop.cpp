@@ -65,6 +65,7 @@ void GameLoop::ClipPlayer()
     {
         m_gameState.m_player.z = m_gameState.m_player.m_targetZ = sector.value().floorHeight + 40.f;
         m_gameState.m_player.m_velocityZ = 0.f;
+        m_gameState.m_player.m_walkInertia = 0.f;
     }
 }
 
