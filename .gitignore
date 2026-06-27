@@ -269,5 +269,7 @@ build/
 build-web/
 # ...and clangd cache
 .cache/
-# ...and UDB autosaves
+# ...and UDB tempfiles
 *.autosave*
+*.backup*
+*.dbs
