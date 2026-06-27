@@ -84,7 +84,7 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step)
         float allowedSectZ = z < (sectZ + 20.f)? (sectZ + 20.f) : (z + fabs(fmodf(m_targetZ, step * 256.f)));
         z = allowedSectZ;
     } else {
-        m_velocityZ = m_targetZ < z? m_velocityZ + (step * 0.75f) : 0.f;
+        m_velocityZ = m_targetZ < z? m_velocityZ + (step * 7.5f) : 0.f;
         float allowedSectZ = (z - m_velocityZ > m_targetZ)? z - m_velocityZ : m_targetZ;
         z = allowedSectZ;
     }
