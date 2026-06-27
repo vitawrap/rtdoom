@@ -201,6 +201,14 @@ Point MapDef::ProjectPointOnLine(const Point &pov, const Line &line) noexcept
     return p;
 }
 
+bool MapDef::IsPointOnLine(const Point &pov, const Line &line) noexcept
+{
+    Point vline = line.e - line.s;
+    Point vinc = pov - line.s;
+    float along = (vline.Dot(vinc) / vline.Length());
+    return along >= 0.f && along <= vline.Length();
+}
+
 bool MapDef::IsInFrontOf(const Point& pov, const MapStore::Node& node) noexcept
 {
     return IsInFrontOf(

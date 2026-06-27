@@ -34,6 +34,7 @@ public:
     static bool                             IsInFrontOf(const Point& pov, const Line& line) noexcept;
     static float                            SignedDist(const Point& pov, const Line& line) noexcept;
     static Point                            ProjectPointOnLine(const Point& pov, const Line& line) noexcept;
+    static bool                             IsPointOnLine(const Point& pov, const Line& line) noexcept;
     bool                                    HasGL() const;
     std::vector<Line>                       m_wireframe;
     std::vector<Sector>                     m_sectors;
