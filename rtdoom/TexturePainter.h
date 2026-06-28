@@ -11,7 +11,7 @@ protected:
     const Projection& m_projection;
     const WADFile&    m_wadFile;
 
-    static std::list<Frame::Span> MergeSpans(const std::vector<Frame::Span>& spans);
+    static std::vector<Frame::Span> MergeSpans(const std::vector<Frame::Span>& spans);
 
 public:
     void PaintWall(int x, const Frame::Span& span, const Frame::PainterContext& textureContext) const override;

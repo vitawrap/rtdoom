@@ -157,10 +157,10 @@ public:
     const int m_height;
 
     // list of horizontal screen spans where isSolid walls have already been drawn (completely occluded)
-    std::list<Span> m_occlusion;
+    std::deque<Span> m_occlusion;
 
     // drawn walls that clip anything behind them
-    std::list<Clip> m_clips;
+    std::vector<Clip> m_clips;
 
     // sprites (in-game objects and semi-transparent walls)
     std::vector<std::unique_ptr<Sprite>> m_sprites;

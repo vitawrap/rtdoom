@@ -2,6 +2,7 @@
 #include "TexturePainter.h"
 #include "Projection.h"
 #include "MathCache.h"
+#include <algorithm>
 
 namespace rtdoom
 {
@@ -154,11 +155,11 @@ void TexturePainter::PaintPlane(const Frame::Plane& plane) const
     }
 }
 
-std::list<Frame::Span> TexturePainter::MergeSpans(const std::vector<Frame::Span>& spans)
+std::vector<Frame::Span> TexturePainter::MergeSpans(const std::vector<Frame::Span>& spans)
 {
-    std::list<Frame::Span> spanlist(spans.begin(), spans.end());
+    std::vector<Frame::Span> spanlist(spans.begin(), spans.end());
 
-    spanlist.sort();
+    std::sort(spanlist.begin(), spanlist.end());
     auto es = spanlist.begin();
     do
     {
