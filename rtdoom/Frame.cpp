@@ -107,7 +107,7 @@ vector<Frame::Span> Frame::ClipHorizontalSegment(int startX, int endX, bool isSo
                 if(eo != m_occlusion.end() && pe->e == eo->s)
                 {
                     eo->s = pe->s;
-                    m_occlusion.erase(pe);
+                    eo = m_occlusion.erase(pe);
                 }
             } while(eo != m_occlusion.end());
         }

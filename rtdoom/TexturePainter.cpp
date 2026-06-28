@@ -167,7 +167,7 @@ std::vector<Frame::Span> TexturePainter::MergeSpans(const std::vector<Frame::Spa
         if(es != spanlist.end() && (ps->e == es->s || ps->e == es->s - 1))
         {
             es->s = ps->s;
-            spanlist.erase(ps);
+            es = spanlist.erase(ps);
         }
     } while(es != spanlist.end());
 
