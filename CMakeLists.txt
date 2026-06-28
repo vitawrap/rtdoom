@@ -80,7 +80,8 @@ if (CMAKE_TOOLCHAIN_FILE MATCHES ".*Emscripten\.cmake$")
     "$<$<CONFIG:Debug>:-sASSERTIONS=1>"
     -sRUNTIME_DEBUG=0
     -sLIBRARY_DEBUG=0
-    -sMAX_WEBGL_VERSION=2
+    -sINITIAL_MEMORY=32MB
+    -sALLOW_MEMORY_GROWTH=1
     "$<$<CONFIG:Debug>:--emit-symbol-map>"
     --embed-file "${CMAKE_SOURCE_DIR}/asset-web@/")
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
