@@ -39,13 +39,13 @@ void GameState::Player::Step(MapDef* mapDef, int m, int r, float step, float tim
     float sectZ = 0.f;
     bool isLiquid = false;
     
-    std::vector<std::shared_ptr<Segment>> segments;
+    std::vector<Segment*> segments;
     const auto&                subSectors = mapDef->GetSubSectorsToDraw(Point(x, y));
     for(auto& subSector : subSectors)
     {
-        segments.reserve(segments.size() + subSector->segments.size());
-        for(auto& segment : subSector->segments) {
-            segments.push_back(segment);
+        segments.reserve(segments.size() + subSector->segmentCount);
+        for(int i = 0; i < subSector->segmentCount; ++i) {
+            segments.push_back(subSector->segments[i]);
         }
     }
     if(subSectors.size())

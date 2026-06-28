@@ -1,4 +1,5 @@
 
+#include "MapStructs.h"
 #include "rtdoom.h"
 #include "MapDef.h"
 #include "WADFile.h"
@@ -8,10 +9,17 @@
 using std::vector;
 using std::deque;
 using std::string;
-using std::shared_ptr;
 
 namespace rtdoom
 {
+/* MapStructs cont. */
+
+SubSector::~SubSector() {
+    delete segments;
+}
+
+/* MapDef */
+
 MapDef::MapDef(const MapStore& mapStore) : m_store {mapStore}
 {
     Initialize();
@@ -53,23 +61,21 @@ void MapDef::OpenDoors()
 }
 
 // traverse the BSP tree stored with the map depth-first
-deque<shared_ptr<Segment>> MapDef::GetSegmentsToDraw(const Point& pov) const
+deque<Segment*> MapDef::GetSegmentsToDraw(const Point& pov) const
 {
-    deque<shared_ptr<Segment>> segments;
+    deque<Segment*> segments;
     const auto&                subSectors = GetSubSectorsToDraw(pov);
     for(auto& subSector : subSectors)
     {
-        for(auto& segment : subSector->segments)
-        {
-            segments.push_back(segment);
-        }
+        for(int i = 0; i < subSector->segmentCount; ++i)
+            segments.push_back(subSector->segments[i]);
     }
     return segments;
 }
 
-deque<shared_ptr<SubSector>> MapDef::GetSubSectorsToDraw(const Point& pov) const
+deque<SubSector*> MapDef::GetSubSectorsToDraw(const Point& pov) const
 {
-    deque<shared_ptr<SubSector>> subSectors;
+    deque<SubSector*> subSectors;
     ProcessNode(pov, *m_store.m_nodes.rbegin(), subSectors);
     return subSectors;
 }
@@ -85,20 +91,18 @@ std::optional<Sector> MapDef::GetSector(const Point& pov) const
         if(childRef & 0x8000)
         {
             const SubSector& subSector = *m_subSectors.at(childRef & 0x7fff);
-//            for(auto i = 0; i < m_store.m_subSectors[childRef & 0x7fff].numSegments; i++)
-            for(auto segment : subSector.segments)
+            for(int i = 0; i < subSector.segmentCount; ++i)
             {
-//                const auto& ld = m_store.m_lineDefs[m_store.m_segments[m_store.m_subSectors[childRef & 0x7fff].firstSegment + i].lineDef];
- //               const bool  isInFront = IsInFrontOf(pov, m_store.m_vertexes[ld.startVertex], m_store.m_vertexes[ld.endVertex]);
+                Segment* segment = subSector.segments[i];
+
                 const bool  isInFront = IsInFrontOf(pov, segment->s, segment->e);
 
-//                if(ld.leftSideDef < 32000 && !isInFront)
                 if(!segment->frontSide.sideless && !isInFront)
                 {
                     const auto sectorId = subSector.sectorId;//                    m_store.m_sideDefs[ld.leftSideDef].sector;
                     return m_sectors[sectorId];
                 }
-  //              else if(ld.rightSideDef < 32000 && isInFront)
+
                 else if(!segment->backSide.sideless && isInFront)
                 {
                     const auto sectorId = subSector.sectorId;//                    m_store.m_sideDefs[ld.rightSideDef].sector;
@@ -115,7 +119,7 @@ std::optional<Sector> MapDef::GetSector(const Point& pov) const
 }
 
 // process tree node and go left or right depending on the locationo of player vs the BSP division line
-void MapDef::ProcessNode(const Point& pov, const MapStore::Node& node, deque<shared_ptr<SubSector>>& subSectors) const
+void MapDef::ProcessNode(const Point& pov, const MapStore::Node& node, deque<SubSector*>& subSectors) const
 {
     if(IsInFrontOf(pov, node))
     {
@@ -130,7 +134,7 @@ void MapDef::ProcessNode(const Point& pov, const MapStore::Node& node, deque<sha
 }
 
 // process a child node depending on whether it's an inner node or a leaf (subsector)
-void MapDef::ProcessChildRef(unsigned short childRef, const Point& pov, deque<shared_ptr<SubSector>>& subSectors) const
+void MapDef::ProcessChildRef(unsigned short childRef, const Point& pov, deque<SubSector*>& subSectors) const
 {
     if(childRef & 0x8000)
     {
@@ -277,11 +281,11 @@ void MapDef::ProcessSegment(float sx, float sy, float ex, float ey, unsigned sho
                    frontSide.yOffset};
 
         m_segments.push_back(
-            std::make_shared<Segment>(s, e, isSolid, front, back, offset, (bool)(lineDef.flags & 0x0010), (bool)(lineDef.flags & 0x0008), isBlocking));
+            new Segment (s, e, isSolid, front, back, offset, (bool)(lineDef.flags & 0x0010), (bool)(lineDef.flags & 0x0008), isBlocking));
     }
     else
     {
-        m_segments.push_back(std::make_shared<Segment>(s, e, false, Side(), Side(), offset, false, false, false));
+        m_segments.push_back(new Segment(s, e, false, Side(), Side(), offset, false, false, false));
     }
 }
 
@@ -342,7 +346,7 @@ void MapDef::BuildSegments()
 }
 
 // process serialized map format into usable structures
-void MapDef::ProcessSubsector(std::shared_ptr<SubSector> subSector, deque<std::shared_ptr<SubSector>>& subSectors) const
+void MapDef::ProcessSubsector(SubSector* subSector, deque<SubSector*>& subSectors) const
 {
     subSectors.push_back(subSector);
 }
@@ -366,17 +370,20 @@ void MapDef::BuildSubSectors()
     for(const auto& subSector : m_store.m_subSectors)
     {
         int                         sectorId = -1;
-        vector<shared_ptr<Segment>> segments;
+        vector<Segment*>            segments;
         for(int i = 0; i < subSector.numSegments; i++)
         {
-            shared_ptr<Segment> segment = m_segments[subSector.firstSegment + i];
+            Segment* segment = m_segments[subSector.firstSegment + i];
             if(!segment->frontSide.sideless)
             {
                 sectorId = segment->frontSide.sector.sectorId;
             }
             segments.push_back(segment);
         }
-        m_subSectors.push_back(std::make_shared<SubSector>(subSectorId++, sectorId, segments));
+        // copy into buffer
+        Segment** segBuffer = new Segment*[segments.size()];
+        memcpy(segBuffer, segments.data(), segments.size() * sizeof(Segment*));
+        m_subSectors.push_back(new SubSector(subSectorId++,sectorId,segBuffer,segments.size()) );
     }
 }
 

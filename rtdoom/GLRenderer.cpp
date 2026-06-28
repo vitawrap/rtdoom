@@ -75,8 +75,9 @@ void GLRenderer::LoadMap()
     for(const auto& subSector : m_gameState.m_mapDef->m_subSectors)
     {
         int startIndex = m_context.m_indices.size();
-        for(const auto& segment : subSector->segments)
+        for(int i = 0; i < subSector->segmentCount; ++i)
         {
+            Segment*                 segment = subSector->segments[i];
             const auto&              frontSector = segment->frontSide.sector;
             int                      textureUnit = 0, textureNo = 0;
             float                    lightness = frontSector.lightLevel;
@@ -169,16 +170,16 @@ void GLRenderer::LoadMap()
         }
 
         const auto& sector = m_gameState.m_mapDef->m_sectors[subSector->sectorId];
-        if(subSector->segments.size())
+        if(subSector->segmentCount)
         {
             // create triangle fan from current (convex) subsector
-            auto   curr = subSector->segments.begin();
-            Vertex fanStart((*curr)->s);
-            while(++curr != subSector->segments.end())
+            Vertex fanStart(subSector->segments[0]->s);
+            for(int k = 0; k < subSector->segmentCount; ++k)
             {
+                
                 std::shared_ptr<Texture> texture;
                 int                      textureUnit, textureNo;
-                const auto&              fanLine = *curr;
+                const auto&              fanLine = subSector->segments[k];
                 if(sector.floorTexture != "-")
                 {
                     texture = m_context.AllocateTexture(sector.floorTexture, textureUnit, textureNo);
